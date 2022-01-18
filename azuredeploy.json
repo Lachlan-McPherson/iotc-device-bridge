@@ -79,7 +79,7 @@
                         "[concat('Microsoft.Web/sites/', variables('functionAppName'))]"
                     ],
                     "properties": {
-                        "packageUri": "https://raw.githubusercontent.com/Myriota/iotc-device-bridge/LM-Sense/iotc-fntmvmf4uomgoae.zip"
+                        "packageUri": "https://raw.githubusercontent.com/Lachlan-McPherson/iotc-device-bridge/main/iotc-fntmvmf4uomgoae.zip"
                     }
                 }
             ],
