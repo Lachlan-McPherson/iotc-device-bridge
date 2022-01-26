@@ -8,27 +8,26 @@ function GPS_unpack(data_count, packet) {
     gps_time_1 = data.readInt16LE(12);
     lat_1 = Math.round( ( data.readUIntBE(14, 3)/ 0xFFFFFF * 180 - 90 )*10000000 ) / 10000000;
     lon_1 = Math.round( ( data.readUIntBE(17, 3)/ 0xFFFFFF * 360 - 180 )*10000000 ) / 10000000;
+    loc_0 = {'lat': lat_0, 'lon': lon_0};
+    loc_1 = {'lat': lat_1, 'lon': lon_1};
     if (data_count == 1)
     {
         return {
             "Message Type": "GPS Message",
-            "Data Count": data_count,
-            "GPS Data 1 Latitude": lat_0,
-            "GPS Data 1 Longitude": lon_0,
-            "GPS Data 1 Time": new Date(gps_time_0*1000).toJSON()
+            "DataCount": data_count,
+            "GPSData1Location": loc_0,
+            "GPSData1Time": new Date(gps_time_0*1000).toJSON()
         }
     }
     if (data_count > 1)
     {
         return {
-            "Message Type": "GPS Message",
-            "Data Count": data_count,
-            "GPS Data 1 Latitude": lat_0,
-            "GPS Data 1 Longitude": lon_0,
-            "GPS Data 1 Time": new Date(gps_time_0*1000).toJSON(),
-            "GPS Data 2 Latitude": lat_1,
-            "GPS Data 2 Longitude": lon_1,
-            "GPS Data 2 Time": new Date((gps_time_0 + gps_time_1)*1000).toJSON()
+            "MessageType": "GPS Message",
+            "DataCount": data_count,
+            "GPSData1Location": loc_0,
+            "GPSData1Time": new Date(gps_time_0*1000).toJSON(),
+            "GPSData2Location": loc_1,
+            "GPSData2Time": new Date((gps_time_0 + gps_time_1)*1000).toJSON()
         }
     }
 }
@@ -45,21 +44,21 @@ function sensor_unpack(data_count, packet) {
     current2 = data.readUInt16LE(14);
     time3 = data.readUInt16LE(16)*1000;
     current3 = data.readUInt16LE(18);
-    values = {"Message Type": "Sensor Message", "Data Count": data_count,'Sensor Data 1 Time': new Date(time0).toJSON(), 'Sensor Data 1 Current (uA)': current0}
+    values = {"MessageType": "Sensor Message", "DataCount": data_count,'SensorData1Time': new Date(time0).toJSON(), 'SensorData1CurrentUA': current0}
     if (data_count>1)
     {
-        values['Sensor Data 2 Time'] = new Date(time1 + time0).toJSON();
-        values['Sensor Data 2 Current (uA)'] =current1;
+        values['SensorData2Time'] = new Date(time1 + time0).toJSON();
+        values['SensorData2CurrentUA'] =current1;
         if (data_count>2)
         {
-            values['Sensor Data 3 Time'] = new Date(time2 + time1 + time0).toJSON();;
-            values['Sensor Data 3 Current (uA)'] =current2;
+            values['SensorData3Time'] = new Date(time2 + time1 + time0).toJSON();;
+            values['SensorData3CurrentUA'] =current2;
             
         }
         if (data_count>3)
             {
-                values['Sensor Data 4 Time'] = new Date(time3 + time2 + time1 + time0).toJSON();;
-                values['Sensor Data 4 Current (uA)'] =current3;
+                values['SensorData4Time'] = new Date(time3 + time2 + time1 + time0).toJSON();;
+                values['SensorData4CurrentUA'] =current3;
                 
             }
     }
@@ -76,19 +75,19 @@ function management_unpack(packet) {
     errn = data.readInt16LE(7);
     lat = Math.round( ( data.readUIntBE(9, 3)/ 0xFFFFFF * 180 - 90 )*10000000 ) / 10000000;
     lon = Math.round( ( data.readUIntBE(12,3)/ 0xFFFFFF * 360 - 180 )*10000000 ) / 10000000;
+    loc = {'lat': lat, 'lon': lon};
     msgc = data.readInt16LE(15);
     batv = Math.round((data_as_Uint8[17] * 1e-1)*10)/10;
     temp = data.readInt16LE(18);
     return {
-        "Message Type": "Management Message",
-        "Message Time": new Date(msg_time*1000).toJSON(),
-        "Number of Readings": seq,
-        "Number of Errors": errn,
-        "Latitude": lat,
-        "Longitude": lon,
-        "User Message Count": msgc,
-        "Battery Voltage (V)": batv,
-        "Temperature (deg C)": temp,
+        "MessageType": "Management Message",
+        "MessageTime": new Date(msg_time*1000).toJSON(),
+        "NumberOfReadings": seq,
+        "NumberOfErrors": errn,
+        "Location": loc,
+        "UserMessageCount": msgc,
+        "BatteryVoltageV": batv,
+        "TemperatureDegC": temp,
     }
      
 }
